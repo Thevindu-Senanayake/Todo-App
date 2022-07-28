@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
+
 import Button from "@mui/material/Button";
 import { FormControl, Input, InputLabel } from "@mui/material";
+
+import db from "./firebase";
+import {
+	query,
+	collection,
+	onSnapshot,
+	addDoc,
+	serverTimestamp,
+	orderBy,
+} from "firebase/firestore";
+
 import Todo from "./Todo";
-import firebase from "firebase";
-// import db from "./firebase";
 
 import "./App.css";
 
@@ -11,17 +21,19 @@ function App() {
 	const [todos, setTodos] = useState([]);
 	const [input, setInput] = useState("");
 
-	// useEffect(() => {
-	// 	db.collection("todos")
-	// 		.orderBy("timestamp", "desc")
-	// 		.onSnapshot((snapshot) => {
-	// 			setTodos(snapshot.docs.map((doc) => doc.data().todo));
-	// 		});
-	// }, []);
+	useEffect(() => {
+		const data = query(collection(db, "todos"), orderBy("timestamp", "desc"));
+		onSnapshot(data, (querySnapshot) => {
+			setTodos(querySnapshot.docs.map((doc) => doc.data().todo));
+		});
+	}, []);
 
 	const addTodo = (e) => {
 		e.preventDefault();
-		setTodos([...todos, input]);
+		addDoc(collection(db, "todos"), {
+			todo: input,
+			timestamp: serverTimestamp(),
+		});
 		setInput("");
 	};
 
