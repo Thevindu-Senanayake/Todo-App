@@ -1,11 +1,6 @@
-import React from "react";
-import {
-	Button,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-} from "@mui/material";
+import React, { Fragment, useState } from "react";
+import { List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { doc, deleteDoc } from "firebase/firestore";
 import db from "./firebase";
 
@@ -13,19 +8,19 @@ import "./Todo.css";
 
 const Todo = ({ todo }) => {
 	return (
-		<List className="todo_list">
-			<ListItemAvatar />
-			<ListItem>
-				<ListItemText primary={todo.todo} secondary="dealine" />
-			</ListItem>
-			<Button
-				onClick={(e) => {
-					deleteDoc(doc(db, "todos", todo.id));
-				}}
-			>
-				Delete
-			</Button>
-		</List>
+		<Fragment>
+			<List className="todo_list">
+				<ListItemAvatar />
+				<ListItem>
+					<ListItemText primary={todo.todo} secondary="dealine" />
+				</ListItem>
+				<DeleteForeverIcon
+					onClick={(e) => {
+						deleteDoc(doc(db, "todos", todo.id));
+					}}
+				/>
+			</List>
+		</Fragment>
 	);
 };
 
